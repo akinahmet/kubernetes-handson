@@ -22,10 +22,10 @@ At the end of the this hands-on training, students will be able to;
 
 ## Part 1 - Setting up the Kubernetes Cluster
 
-- Launch a Kubernetes Cluster of Ubuntu 20.04 with two nodes (one master, one worker) using the [Cloudformation Template to Create Kubernetes Cluster](../kubernetes-02-basic-operations/cfn-template-to-create-k8s-cluster.yml). *Note: Once the master node up and running, worker node automatically joins the cluster.*
+- Launch a Kubernetes Cluster of Ubuntu 20.04 with two nodes (one master, one worker) using the [Terraform files to Create Kubernetes Cluster](../create-kube-cluster-terraform/main.tf). *Note: Once the master node up and running, worker node automatically joins the cluster.*
 
 >*Note: If you have problem with kubernetes cluster, you can use this link for lesson.*
->https://www.katacoda.com/courses/kubernetes/playground
+>https://labs.play-with-k8s.com
 
 - Check if Kubernetes is running and nodes are ready.
 
@@ -368,7 +368,7 @@ metadata:
 spec:
   containers:
   - name: mynginx
-    image: nginx:1.19
+    image: nginx:latest
     ports:
     - containerPort: 80
     volumeMounts:
@@ -405,10 +405,17 @@ Hello World
 
 - Log in the `kube-worker-1 ec2-instance` and remove the `nginx container`. Note that container is changed.
 
+- See the running containers
 ```bash
-docker container ls
-docker container rm -f <container-id>
-docker container ls
+sudo ctr --namespace k8s.io containers ls 
+```
+- Stop the running containers
+```bash
+sudo ctr --namespace k8s.io tasks rm -f <container-id>  
+```
+- Delete the running containers
+```bash
+sudo ctr --namespace k8s.io containers delete <container-id>  
 ```
 
 - Log in the kube-master ec2-instance again and connect the nginx-pod. See that test folder and content are there.

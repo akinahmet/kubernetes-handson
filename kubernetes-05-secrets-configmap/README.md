@@ -883,9 +883,3 @@ deployment.apps "demo" deleted
 service "demo-service" deleted
 ```
 
-
-### Optional
-
-Here is the challenge:
-
-* Use our hello app from clarusway repo. And to call the $GREETINGS env use secrets.

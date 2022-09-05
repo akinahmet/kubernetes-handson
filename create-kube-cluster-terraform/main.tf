@@ -18,17 +18,24 @@ data "aws_region" "current" {}
 variable "key-name" {
   default = "oliver"   # change here
 }
+variable "myami" {
+  default = "ami-08d4ac5b634553e16"
+}
+
+variable "instancetype" {
+  default = "t3a.medium"
+}
 
 locals {
   name = "oliver"   # change here, optional
 }
 
 resource "aws_instance" "master" {
-  ami                  = "ami-04505e74c0741db8d"
-  instance_type        = "t3a.medium"
+  ami                  = var.myami
+  instance_type        = var.instancetype
   key_name             = var.key-name
   iam_instance_profile = aws_iam_instance_profile.ec2connectprofile.name
-  security_groups      = ["${local.name}-k8s-master-sec-gr"]
+  vpc_security_group_ids = [aws_security_group.tf-k8s-master-sec-gr.id]
   user_data            = data.template_file.master.rendered
   tags = {
     Name = "${local.name}-kube-master"
@@ -36,11 +43,11 @@ resource "aws_instance" "master" {
 }
 
 resource "aws_instance" "worker" {
-  ami                  = "ami-04505e74c0741db8d"
-  instance_type        = "t3a.medium"
+  ami                  = var.myami
+  instance_type        = var.instancetype
   key_name             = var.key-name
   iam_instance_profile = aws_iam_instance_profile.ec2connectprofile.name
-  security_groups      = ["${local.name}-k8s-master-sec-gr"]
+  vpc_security_group_ids = [aws_security_group.tf-k8s-master-sec-gr.id]
   user_data            = data.template_file.worker.rendered
   tags = {
     Name = "${local.name}-kube-worker"
@@ -109,8 +116,13 @@ data "template_file" "master" {
   template = file("master.sh")
 }
 
+data "aws_vpc" "default-vpc" {
+  default = true
+}
+
 resource "aws_security_group" "tf-k8s-master-sec-gr" {
   name = "${local.name}-k8s-master-sec-gr"
+  vpc_id = data.aws_vpc.default-vpc.id
   tags = {
     Name = "${local.name}-k8s-master-sec-gr"
   }

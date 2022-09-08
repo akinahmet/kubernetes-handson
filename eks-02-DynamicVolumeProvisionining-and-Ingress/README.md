@@ -36,7 +36,7 @@ For information on installing or upgrading eksctl, see [Installing or upgrading 
 
 ## Part 1 - Installing kubectl and eksctl on Amazon Linux 2
 
-### Install kubectl
+### Install aws cli latest
 
 - Launch an AWS EC2 instance of Amazon Linux 2 AMI with security group allowing SSH.
 
@@ -47,6 +47,23 @@ For information on installing or upgrading eksctl, see [Installing or upgrading 
 ```bash
 sudo yum update -y
 ```
+
+- Uninstall aws cli version 1
+
+```bash
+sudo rm -rf /bin/aws
+```
+
+- Install aws cli version 2
+
+```bash
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+sudo unzip awscliv2.zip
+sudo ./aws/install
+export PATH=$PATH:/usr/bin/aws
+```
+
+### Install kubectl
 
 - Download the Amazon EKS vended kubectl binary.
 
@@ -125,7 +142,7 @@ eksctl create cluster \
  --managed
 ```
 
-or 
+or (without ssh-access to worker nodes)
 
 ```bash
 eksctl create cluster --region us-east-1 --zones us-east-1a,us-east-1b,us-east-1c --node-type t3a.medium --nodes 2 --nodes-min 2 --nodes-max 3 --name cw-cluster

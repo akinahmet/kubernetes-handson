@@ -137,11 +137,11 @@ aws configure
 ```bash
 
 eksctl create cluster \
- --name cwcluster \
+ --name eks-3-cluster \
  --version 1.22 \
  --region us-east-1 \
  --zones us-east-1a,us-east-1b,us-east-1c \
- --nodegroup-name my-nodes \
+ --nodegroup-name eks-3-my-nodes \
  --node-type t3a.medium \
  --nodes 1 \
  --nodes-min 1 \
@@ -187,12 +187,12 @@ aws iam create-policy \
 
 ```bash
 eksctl create iamserviceaccount \
-  --cluster=cwcluster \
+  --cluster=eks-3-cluster \
   --region=us-east-1 \
   --namespace=kube-system \
   --name=aws-load-balancer-controller \
   --role-name "AmazonEKSLoadBalancerControllerRole" \
-  --attach-policy-arn=arn:aws:iam::111122223333:policy/AWSLoadBalancerControllerIAMPolicy \
+  --attach-policy-arn=arn:aws:iam::829393363758:policy/AWSLoadBalancerControllerIAMPolicy \
   --approve
 ```
 
